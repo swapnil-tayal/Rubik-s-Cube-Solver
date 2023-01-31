@@ -39,6 +39,7 @@ while True:
 
     ret, frame= vid.read()
     frame = cv.flip(frame, 1)
+    frame = cv.resize(frame, (1280, 720), fx=0, fy=0, interpolation = cv.INTER_CUBIC)
 
     hsv_frame = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
