@@ -17,5 +17,5 @@ This project concentrates on solving a unsolved Rubik's Cube. The program contai
 
 Click below for a sample VIDEO:
 
-[![Watch the video](https://img.youtube.com/vi/anFyZGUTW74/sddefault.jpg)](https://youtu.be/anFyZGUTW74)
+[![Watch the video](https://img.youtube.com/vi/BXai7tTxbdE/sddefault.jpg)](https://youtu.be/BXai7tTxbdE)
 
