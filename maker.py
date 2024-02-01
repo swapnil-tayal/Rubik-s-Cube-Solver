@@ -1,4 +1,5 @@
 
+# updates the cube's current side, wrt to key press
 def Curr2Cube(cube, curr, state):
 
     if(state == 'upper'):
@@ -29,10 +30,15 @@ def Curr2Cube(cube, curr, state):
 
 def cubeToString(cube, myCube):
 
+    # proper order according to kociemba
+    # up -> right -> front -> down -> left -> black
+
     for i in range(0, 9):
+        # be default detecting it as White color
         if(cube['up'][i] == None):
             myCube += 'W'
         else:
+            # else making it, work like kociemba red -> R
             myCube += toSignConv(cube['up'][i])
             
     for i in range(0, 9):
@@ -90,6 +96,7 @@ def toSignConv(color):
 
 def check(myCube):
 
+    # each colors count 9 times
     if(myCube.count('L') != 9):
         return False
     if(myCube.count('U') != 9):

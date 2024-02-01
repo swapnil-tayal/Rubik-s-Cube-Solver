@@ -177,6 +177,8 @@ def default(blank):
 
 def CurrToMyCubePrev(curr, side, blank):
 
+
+    # converting red to -> (0, 0, 255) this form
     top_left_color = color_detect.fun2(curr[0])
     top_middle_color = color_detect.fun2(curr[1])
     top_right_color = color_detect.fun2(curr[2]) 
@@ -196,6 +198,7 @@ def CurrToMyCubePrev(curr, side, blank):
         cv.rectangle(blank, (190, 50), (270, 130), top_right_color, thickness=cv.FILLED)
 
         cv.rectangle(blank, (30, 130), (110, 210), middle_left_color, thickness=cv.FILLED)
+        # by default upper will be always white
         cv.rectangle(blank, (110, 130), (190, 210), (255, 255, 255), thickness=cv.FILLED)
         cv.rectangle(blank, (190, 130), (270, 210), middle_right_color, thickness=cv.FILLED)
 

@@ -4,7 +4,7 @@ def fun (hsv_values):
     h = hsv_values[0]
     s = hsv_values[1]
     v = hsv_values[2]
-
+    
     if(s > 30):
 
         if(h < 8):

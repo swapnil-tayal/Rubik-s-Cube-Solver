@@ -7,12 +7,15 @@ def output(text, frame, AnsIndex):
 
     text = text.split()
 
+    # followed the sequence correctly
     if(AnsIndex >= len(text)):
         cv.putText(frame, 'Cube Solved', (150, 80), cv.FONT_ITALIC, 1.2, (0, 0, 0), 2)
         return
 
+    # current move
     move = text[AnsIndex]
 
+    # augmented arrows
     if(move == 'R'):
         cv.arrowedLine(frame, (600, 540), (600, 180), (0, 0, 0), 10)
 
@@ -151,10 +154,13 @@ def output(text, frame, AnsIndex):
 
 
 
+# printing invalid cube on screen
 def outputIV(text, blank2):
 
         cv.putText(blank2, text, (520, 200), cv.FONT_ITALIC, 1, (255, 255, 255))
 
+
+# else printing correct seq of answer
 def outputAns(text, blank2):
 
         cv.putText(blank2, text, (250, 100), cv.FONT_ITALIC, 1, (255, 255, 255))

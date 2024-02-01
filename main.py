@@ -6,7 +6,9 @@ import MYcubePreview
 import Info
 from kociemba import kociemba
 
+# vid object to capture frames from the camera and process them in code
 vid = cv.VideoCapture(0)
+# giving height and widht to vis frame
 vid.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
 vid.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -18,9 +20,11 @@ cube = {'up' : ['white', 'white', 'white', 'white', 'white', 'white', 'white', '
         'back': ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green']}
 
 
+# empty screen for screen1 and screen2
 blank = np.zeros((950, 600, 3) , dtype='uint8')
 blank2 = np.zeros((230, 1280, 3) , dtype='uint8')
 
+# below screen pannel (screen, text, origin, font, fontsize, color)
 cv.putText(blank2, 'W-upper', (0, 25), cv.FONT_ITALIC , 1, (255, 255, 255))
 cv.putText(blank2, 'Z-down', (0, 65), cv.FONT_ITALIC , 1, (0, 255, 255))
 cv.putText(blank2, 'A-left', (0, 105), cv.FONT_ITALIC , 1, (0, 140, 255))
@@ -31,16 +35,30 @@ cv.putText(blank2, 'S-front', (0, 225), cv.FONT_ITALIC , 1, (255, 0, 0))
 
 cv.putText(blank2, 'Enter-Compute Solution', (400, 30), cv.FONT_ITALIC , 1.2, (255, 255, 255))
 
+# side pannel for preview
 MYcubePreview.default(blank)
 AnsIndex = -1
 text = 'deafult'
 
 while True:
 
+    # reads one frame from the video source
+    # ret -> boolean variable indicating whether the frame was successfully read
+    # frame -> NumPy array representing the image data of the captured frame
     ret, frame= vid.read()
+
+    # horizontal flipping the frame - 1
     frame = cv.flip(frame, 1)
+
+    # -> fx and fy are scaling factors
+
+    # interpolation = cv.INTER_CUBIC -> 
+    # Cubic interpolation considers a larger neighborhood of pixels when estimating the 
+    # value of a new pixel, resulting in smoother and more visually appealing resized images
     frame = cv.resize(frame, (1280, 720), fx=0, fy=0, interpolation = cv.INTER_CUBIC)
 
+    # HSV (Hue-Saturation-Value) frame from BGR
+    # why ? -> for color detection, for easily
     hsv_frame = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
     height, width = frame.shape[:2] 
@@ -48,6 +66,7 @@ while True:
 
     # Solution(frame)
 
+    # corrdinates on window, for accessing color
     tr = [120, 120]
     tm = [360, 120]
     tl = [600, 120]
@@ -58,7 +77,7 @@ while True:
     bm = [360, 600]
     bl = [600, 600]
 
-
+    # img center radius color thickness
     cv.circle(frame, tr, 15, (255, 255, 255), thickness=cv.FILLED)
     cv.circle(frame, tm, 15, (255, 255, 255), thickness=cv.FILLED)
     cv.circle(frame, tl, 15, (255, 255, 255), thickness=cv.FILLED)
@@ -70,6 +89,7 @@ while True:
     cv.circle(frame, bl, 15, (255, 255, 255), thickness=cv.FILLED)
 
 
+    # detecting the colors from hsv frame (returns name -> red, blue, white)
     top_left_color = color_detect.fun(hsv_frame[120, 120])
     middle_left_color = color_detect.fun(hsv_frame[360, 120])
     bottom_left_color = color_detect.fun(hsv_frame[600, 120])
@@ -80,7 +100,8 @@ while True:
     middle_right_color = color_detect.fun(hsv_frame[360, 600])
     bottom_right_color = color_detect.fun(hsv_frame[600, 600])
 
-
+    # live detection window for colors
+    # img, pt1, pt2, color, thickness           # this represents proper view of colors, like perfect red
     cv.rectangle(frame, (800, 200), (900, 300), color_detect.fun2(top_left_color), thickness=cv.FILLED)
     cv.rectangle(frame, (900, 200), (1000, 300), color_detect.fun2(top_middle_color), thickness=cv.FILLED)
     cv.rectangle(frame, (1000, 200), (1100, 300), color_detect.fun2(top_right_color), thickness=cv.FILLED)
@@ -91,7 +112,7 @@ while True:
     cv.rectangle(frame, (900, 400), (1000, 500), color_detect.fun2(bottom_middle_color), thickness=cv.FILLED)
     cv.rectangle(frame, (1000, 400), (1100, 500), color_detect.fun2(bottom_right_color), thickness=cv.FILLED)
 
-
+    # white lines for displaying
     cv.line(frame, (800, 200), (800, 500), (0, 0, 0), 3)
     cv.line(frame, (900, 200), (900, 500), (0, 0, 0), 3)
     cv.line(frame, (1000, 200), (1000, 500), (0, 0, 0), 3)
@@ -102,17 +123,35 @@ while True:
     cv.line(frame, (800, 400), (1100, 400), (0, 0, 0), 3)
     cv.line(frame, (800, 500), (1100, 500), (0, 0, 0), 3)
 
-
+    # fetching current frame colors, and making cube
     curr = [top_left_color, top_middle_color, top_right_color,
             middle_left_color, middle_middle_color, middle_right_color,
             bottom_left_color, bottom_middle_color, bottom_right_color]
 
     myCube = ""
+
+    # The & 0xFF operation is applied to extract the least significant 8 bits of the result. 
+    # This is often done to ensure compatibility with ASCII values of keyboard keys.
+
+    # waitkey(3) stops the execuation for 3ms and wait for any key event
+    # key stores the accsi value
     key = cv.waitKey(3) & 0xFF
         
 
-    if(key == ord('w')):
+    # ord() -> gives assci value
+
+    if(key == ord('b')):
+        if middle_left_color == "white":
+            cube = maker.Curr2Cube(cube, curr, 'upper')
+            # blank is right pannel
+            MYcubePreview.CurrToMyCubePrev(curr, 'upper', blank) 
+        
+
+
+    if(middle_middle_color == "white"):
+        # updates the cube's current side, wrt to key press
         cube = maker.Curr2Cube(cube, curr, 'upper')
+        # blank is right pannel
         MYcubePreview.CurrToMyCubePrev(curr, 'upper', blank) 
 
     if(key == ord('d')):
@@ -135,10 +174,13 @@ while True:
         cube = maker.Curr2Cube(cube, curr, 'back')
         MYcubePreview.CurrToMyCubePrev(curr, 'back', blank) 
 
-
+    # The carriage return character typically moves the cursor 
+    # to the beginning of the line without advancing to the next line.
     if(key == ord('\r')):
         myCube = maker.cubeToString(cube, myCube)
         print(myCube)
+
+        # checking valid cube, like 9 red, 9 blue, 9 white ...
         if(maker.check(myCube) == False):
             print('in valid input')
             text = 'invalid cube'
@@ -151,11 +193,14 @@ while True:
         
 
         if(text == 'invalid cube'):
+            # printing invalid cube on screen
             Info.outputIV(text, blank2)
         else:
+            # else printing correct seq of answer
             Info.outputAns(text, blank2)
             n = len(ans)
         
+    # on pressing l window shows the next seq in the window
     if(key == ord('l')):
         AnsIndex = AnsIndex + 1
         
